@@ -54,14 +54,15 @@ signal_confirmation=zeros(number_of_nodes);
 % end
 STP_Matrix =rand(number_of_nodes,number_of_nodes);
 %STP_Matrix = fso(Distance_Matrix)
-
+snr=[0,5,10,15,20,25];
+for sn=1:length(snr)
  for i = 1:number_of_nodes 
      for j = 1:number_of_nodes 
          if Distance_Matrix(i,j)<400
-             STP_Matrix(i,j) = PLC(Distance_Matrix(i,j));
+             STP_Matrix(i,j) = PLC(Distance_Matrix(i,j),snr(sn));
              R(i,j)=0;
          else
-             STP_Matrix(i,j) =FSO(Distance_Matrix(i,j));
+             STP_Matrix(i,j) =FSO(Distance_Matrix(i,j),snr(sn));
          end
              
      
@@ -100,7 +101,7 @@ for i = 2:number_of_nodes
 end
 SUMMATION = 0;
 bhenchod = 0;
-ANOTHER = 0;
+con_n = 0;
 max_1 = max(max(ASHISH_MC));
 if count > 0
     while max_1 > 0.5
@@ -134,8 +135,15 @@ if count > 0
         max_1 = max(max(ASHISH_MC));
     end
 end
-
-
+for g = 1:number_of_nodes
+    if sum(signal_confirmation(:,g)) == 0
+        con_n = con_n + 1; 
+    end
+end
+con_ratio(sn)=(pointsNumber-con_n)*100/pointsNumber;
+con_n=0;
+end
+plot(snr, con_ratio)
 H = graph(D);
 H.Edges.Weight;
 
