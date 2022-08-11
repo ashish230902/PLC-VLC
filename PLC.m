@@ -1,5 +1,5 @@
 %% PLC Model
-%function stp2=PLC(D)
+function stp2=PLC(D,SNR_dB)
 %% PLC Model
 noise_x =(0:0.01:100);
 D=350;
@@ -58,7 +58,7 @@ h2= X.^2;
  %N0= scale*(sqrt(pi/2));
  N0= (Pt.*h2./SNR_th);
  
-   SNR_dB=14; %SNR value in dB
+%    SNR_dB=30; %SNR value in dB
    SNR=10.^(SNR_dB./10); 
   
   3%SNR= SNR.*h2;
@@ -94,4 +94,4 @@ h2= X.^2;
        
  BER=trapz(X,0.5.*erfc(sqrt(snr_h./2)).*fn)
 
-%end
+end

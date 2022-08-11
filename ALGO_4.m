@@ -1,10 +1,10 @@
 %Network Formation for VLC_PLC Paper
 clear all
 clear scr
-r=4000; %radius of disk
+r=1000; %radius of disk
 xx0=100; yy0=100; %centre of disk
 %Simulate binomial point process
-pointsNumber=30; 
+pointsNumber=10; 
 theta=2*pi*(rand(pointsNumber,1)); %angular coordinates
 rho=r*sqrt(rand(pointsNumber,1)); %radial coordinates
 %Convert from polar to Cartesian coordinates
@@ -54,15 +54,15 @@ signal_confirmation=zeros(number_of_nodes);
 % end
 STP_Matrix =rand(number_of_nodes,number_of_nodes);
 %STP_Matrix = fso(Distance_Matrix)
-snr=[0,5,10,15,20,25];
-for sn=1:length(snr)
+ snr=[0,5,10];
+ for sn=1:length(snr)
  for i = 1:number_of_nodes 
      for j = 1:number_of_nodes 
          if Distance_Matrix(i,j)<400
-             STP_Matrix(i,j) = PLC(Distance_Matrix(i,j),snr(sn));
+             STP_Matrix(i,j) = PLC(Distance_Matrix(i,j),sn);
              R(i,j)=0;
          else
-             STP_Matrix(i,j) =FSO(Distance_Matrix(i,j),snr(sn));
+             STP_Matrix(i,j) =FSO(Distance_Matrix(i,j),sn);
          end
              
      
@@ -135,18 +135,18 @@ if count > 0
         max_1 = max(max(ASHISH_MC));
     end
 end
-for g = 1:number_of_nodes
-    if sum(signal_confirmation(:,g)) == 0
-        con_n = con_n + 1; 
-    end
-end
-con_ratio(sn)=(pointsNumber-con_n)*100/pointsNumber;
-con_n=0;
-end
-plot(snr, con_ratio)
+ for g = 1:number_of_nodes
+     if sum(signal_confirmation(:,g)) == 0
+         con_n = con_n + 1; 
+     end
+ end
+ con_ratio(sn)=(pointsNumber-con_n)*100/pointsNumber;
+ con_n=0;
+ end
+ figure(3)
+ plot(snr, con_ratio)
 H = graph(D);
 H.Edges.Weight;
-
 p = plot(H,'EdgeLabel',H.Edges.Weight);
 p.XData = xx;
 p.YData = yy;

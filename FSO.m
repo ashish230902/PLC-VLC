@@ -1,6 +1,6 @@
 
 %% FSO model
-%function stp2=FSO(le)
+function stp2=FSO(le,SNR_dB)
 noise_x =(0:0.01:100);
 Rdia= 5*10^-3; %aperture of Rx
 wav= 1550*10^-9;
@@ -8,10 +8,9 @@ h_upperlimit = 10; %Upperlimit of h
 h_lowerlimit = 0; %Lowerlimit of h 
 x= 0.001; %Interval of PDF
 h= (h_lowerlimit:x:h_upperlimit);
-Pt_av=100;
+Pt_av=1000;
 k_beam = (2*pi)/wav;
 Cn_sq=8.5e-15;
-le=3000;
 %Cn_sq =6.352*10^-7*le^-2.966;
 
 %  if le<19
@@ -64,7 +63,7 @@ h2=h.^2;
  %N0= scale*(sqrt(pi/2));
  N0= (Pt_av.*h2./SNR_th);
  
-   SNR_dB=30; %SNR value in dB
+%    SNR_dB=30; %SNR value in dB
    SNR=10.^(SNR_dB./10); 
   
   %SNR= SNR.*h2;
@@ -95,5 +94,5 @@ h2=h.^2;
   stp2=trapz((h),stp1)
        
  BER=trapz(h,0.5.*erfc(sqrt(snr_h./2)).*GGpdf_h)
-%end
+end
 %%
