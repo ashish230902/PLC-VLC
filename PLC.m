@@ -1,54 +1,55 @@
 %% PLC Model
 function stp2=PLC(D,SNR_dB)
 %% PLC Model
-noise_x =(0:0.01:100);
-D=350;
-Pt=100;
-if 75<D<125
-     a0= 9.40*10^(-3);
-     a1=  4.20*10^-7;
-    %b0=(-0.00009098*D)-0.000001126;
-    k=0.7;
-elseif 125<D<175
-    a0= 1.09*10^(-3);
-     a1=  3.36*10^-7;
-    %b0=(-0.00009098*D)-0.000001126;
-    k=0.7;
-elseif 175<D<250
-    a0= 9.33*10^(-3);
-     a1=  3.24*10^-7;
-    %b0=(-0.00009098*D)-0.000001126;
-    k=0.7;
-elseif 250<D<340
-     a0= 8.40*10^(-3);
-     a1=  3*10^-9;
-    %b0=(-0.00009098*D)-0.000001126;
-    k=1;
-elseif 340<D<405
-     a0= 6.20*10^(-3);
-     a1=  4.00*10^-9;
-    %b0=(-0.00009098*D)-0.000001126;
-    k=1;
-end
+noise_x =(0:0.001:10);
+Pt=1000;
+%D = 500;
+f=0.02;
 
-%  a0 = 0; 
-%  a1 = 7.8*10^-10; 
-%  k = 1;
+%SNR_dB = 5;
+% if 75<D<125
+%      a0= 9.40*10^(-3);
+%      a1=  4.20*10^-7;
+%     %b0=(-0.00009098*D)-0.000001126;
+%     k=0.7;
+% elseif 125<D<175
+%     a0= 1.09*10^(-3);
+%      a1=  3.36*10^-7;
+%     %b0=(-0.00009098*D)-0.000001126;
+%     k=0.7;
+% elseif 175<D<250
+%     a0= 9.33*10^(-3);
+%      a1=  3.24*10^-7;
+%     %b0=(-0.00009098*D)-0.000001126;
+%     k=0.7;
+% elseif 250<D<340
+%      a0= 8.40*10^(-3);
+%      a1=  3*10^-9;
+%     %b0=(-0.00009098*D)-0.000001126;
+%     k=1;
+% elseif 340<D<405
+%      a0= 6.20*10^(-3);
+%      a1=  4.00*10^-9;
+%     %b0=(-0.00009098*D)-0.000001126;
+%     k=1;
+% end
+% 
+ a0 = 9.33*10^-3; 
+ a1 = 5.1*10^-3; 
+ k = 0.7;
 
-f=50;
 
 h_upperlimit = 100; %Upperlimit of h
 h_lowerlimit = 0; %Lowerlimit of h 
 x= 0.01; %Interval of PDF
-X= [h_lowerlimit:x:h_upperlimit];
-
+X= (h_lowerlimit:x:h_upperlimit);
+X2=X.^2;
 A_fn= exp(-2*D*(a0+(a1*(f^k))));
 %scale= exp(-1*(a0+(a1*(f.^k)))*D);
 scale=sqrt(Pt*A_fn/(pi-2));
+%fn = (1/A_fn)*exp(-X2/A_fn);
 fn = raylpdf(X,scale);
-
-plot(X,fn)
-
+plot(X2,A_fn)
 %% SNR
 h2= X.^2;
  Snr_th= 22.6;
@@ -63,7 +64,7 @@ h2= X.^2;
   
   3%SNR= SNR.*h2;
    Noise_var_pdf=sqrt(Pt./(SNR));
-   Noise_scale=sqrt(Noise_var_pdf/2);
+   Noise_scale=sqrt(2*Noise_var_pdf/pi);
   
   noise_pdf = raylpdf(noise_x,Noise_scale);
   figure(2)
