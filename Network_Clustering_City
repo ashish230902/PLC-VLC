@@ -1,0 +1,52 @@
+clear all
+clear scr
+No_cluster_head=5;
+pointsNumber=25; 
+xx0=[0,1600,-100,1800,1300];
+yy0=[0,1900,0,0,-1900] ;
+r=400; %radius of disk
+
+%Simulate binomial point process
+theta=2*pi*(rand(pointsNumber,1)); %angular coordinates
+rho=r*sqrt(rand(pointsNumber,1)); %radial coordinates
+%Convert from polar to Cartesian coordinates
+[xx1,yy1]=pol2cart(theta,rho); %x/y coordinates of Poisson points
+%Shift centre of disk to (xx0,yy0)
+Cluster_head = randi([1 No_cluster_head],1,pointsNumber);
+for i=1:pointsNumber
+    xx(i)=round(xx1(i)+ xx0(Cluster_head(i)));
+    yy(i)=round(yy1(i)+yy0(Cluster_head(i)));
+end
+
+xx(pointsNumber+1:pointsNumber+No_cluster_head)=xx0;
+yy(pointsNumber+1:pointsNumber+No_cluster_head)=yy0;
+
+%Plotting
+D = [];
+for i=1:pointsNumber+No_cluster_head
+ for j=1:pointsNumber+No_cluster_head
+        D(i,j)=sqrt((xx(i)-xx(j))^2+(yy(i)-yy(j))^2);
+    end
+end
+%G = digraph(1,1:pointsNumber,D(1));
+%for i=2:pointsNumber
+ %   G = addedge(G,i,1:pointsNumber,D(i));
+%end
+G = graph(D);
+G.Edges.Weight;
+for i=1:pointsNumber   
+    for j=1:pointsNumber
+        R(i,j)=randi([0, 1])
+    end
+end
+
+p = plot(G)
+p.XData = xx;
+p.YData = yy;
+for i=1:pointsNumber   
+    for j=1:pointsNumber
+     if R(i,j)==0
+         highlight(p, i, j, 'EdgeColor', 'r')
+     end
+    end
+end
