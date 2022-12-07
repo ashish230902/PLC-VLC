@@ -1,4 +1,5 @@
 %Network Formation for VLC_PLC Paper
+clc
 clear all
 clear scr
 r=2000; %radius of disk
